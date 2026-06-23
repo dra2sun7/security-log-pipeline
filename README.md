@@ -6,7 +6,7 @@
 
 ## 🏗️ 1. 시스템 아키텍처 (System Architecture)
 
-(```)mermaid
+```mermaid
 graph LR
     %% 스타일 정의
     classDef producer fill:#e1f5fe,stroke:#039be5,stroke-width:2px;
@@ -58,7 +58,7 @@ graph LR
     style Collection_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
     style Processing_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
     style Management_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
-(```)
+```
 
 ### 🧩 컴포넌트별 핵심 역할
 * **Nginx**: 실제 상용 환경의 웹 서비스를 대변하며 보안 분석의 대상이 되는 원본 로그를 생성합니다.
@@ -87,7 +87,7 @@ graph LR
 
 현실 세계(호스트 리눅스)와 컨테이너 환경을 격리 및 동기화하기 위해 디렉토리를 바인드 마운트하여 구동합니다.
 
-(```)bash
+```bash
 # 1. 원본 로그 저장 디렉토리 선제 생성
 mkdir -p web/logs/nginx
 
@@ -96,7 +96,7 @@ docker compose up -d
 
 # 3. 테스트용 의도적 부하 트래픽 주입 (15회 자동 호출)
 for i in {1..15}; do curl -s http://localhost > /dev/null; done
-(```)
+```
 
 * **AKHQ 토픽 웹 관제**: 브라우저에서 `http://localhost:8080` 접속
 * **Kibana 실시간 보안 관제 (Discover)**: 브라우저에서 `http://localhost:5601` 접속 후 `nginx-security-logs-*` 데이터 뷰 등록
