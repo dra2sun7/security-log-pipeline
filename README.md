@@ -9,7 +9,7 @@
 ```mermaid
 graph LR
     %% 스타일 정의
-    classDef producer fill:#e1f5fe,stroke:#039be5,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef producer fill:#e1f5fe,stroke:#039be5,stroke-width:2px;
     classDef agent fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
     classDef queue fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
     classDef monitor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
@@ -28,16 +28,16 @@ graph LR
         AKHQ["📊 AKHQ Web UI<br/>(Topic & Lag Monitoring)"]
     end
 
-    %% 흐름 및 연결
+    %% 흐름 및 연결 (특수문자 에러 수정)
     Nginx -->|1. 로그 생성| Filebeat
-    Filebeat -->|2. 실시간 전송 (9092)| Kafka
-    Kafka -.->|3. 토픽/컨슈머 모니터링| AKHQ
+    Filebeat -->|2. 실시간 전송 Port 9092| Kafka
+    Kafka -.->|3. 토픽 및 컨슈머 모니터링| AKHQ
 
     %% 스타일 적용
     class Nginx producer;
     class Filebeat agent;
     class Kafka queue;
-    class classDef,AKHQ monitor;
+    class AKHQ monitor;
 
     %% 서브그래프 스타일
     style Web_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
