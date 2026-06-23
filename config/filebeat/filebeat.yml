@@ -1,0 +1,14 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    # Nginx 컨테이너 내부에서 공유되는 로그 경로를 바라봅니다.
+    paths:
+      - /var/log/nginx/access.log
+
+output.kafka:
+  # docker-compose 가상 네트워크 안에서 kafka 컨테이너 이름을 직접 지정합니다.
+  hosts: ["kafka:29092"]
+  topic: "nginx-access-logs"
+  required_acks: 1
+  compression: gzip
+  max_message_bytes: 1000000
