@@ -8,9 +8,41 @@
 
 ```mermaid
 graph LR
-    Nginx[Nginx Web Server] -->|access.log 생산| Filebeat[Filebeat Agent]
-    Filebeat -->|실시간 Ingestion| Kafka[Apache Kafka Cluster]
-    Kafka -->|Topic 데이터 동기화| AKHQ[AKHQ Web UI]
+    %% 스타일 정의
+    classDef producer fill:#e1f5fe,stroke:#039be5,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef agent fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef queue fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
+    classDef monitor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+
+    %% 노드 구성
+    subgraph Web_Layer [웹 서비스 계층]
+        Nginx["🛡️ Nginx Web Server<br/>(Generate access.log)"]
+    end
+
+    subgraph Collection_Layer [수집 및 버퍼 계층]
+        Filebeat["🚀 Filebeat<br/>(Lightweight Ingestion)"]
+        Kafka["🗄️ Apache Kafka Cluster<br/>(Message Buffer & Queue)"]
+    end
+
+    subgraph Management_Layer [관제 계층]
+        AKHQ["📊 AKHQ Web UI<br/>(Topic & Lag Monitoring)"]
+    end
+
+    %% 흐름 및 연결
+    Nginx -->|1. 로그 생성| Filebeat
+    Filebeat -->|2. 실시간 전송 (9092)| Kafka
+    Kafka -.->|3. 토픽/컨슈머 모니터링| AKHQ
+
+    %% 스타일 적용
+    class Nginx producer;
+    class Filebeat agent;
+    class Kafka queue;
+    class classDef,AKHQ monitor;
+
+    %% 서브그래프 스타일
+    style Web_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
+    style Collection_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
+    style Management_Layer fill:none,stroke:#cfd8dc,stroke-width:1px;
 ```
 
 * **Nginx**: 실제 상용 환경의 웹 서비스를 대변하며 보안 분석의 대상이 되는 원본 로그를 생성합니다.
