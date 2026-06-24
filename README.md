@@ -8,7 +8,7 @@
 
 ```mermaid
 graph LR
-    %% 스타일 정의
+%% 스타일 정의
     classDef producer fill:#e1f5fe,stroke:#039be5,stroke-width:2px;
     classDef agent fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
     classDef queue fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
@@ -16,31 +16,36 @@ graph LR
     classDef storage fill:#ffebee,stroke:#c62828,stroke-width:2px;
     classDef monitor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
 
-    %% 노드 구성
+    %% 웹 서비스 계층
     subgraph Web_Layer [웹 서비스 계층]
         Nginx["🛡️ Nginx Web Server<br/>(Generate access.log)"]
     end
 
+    %% 수집 및 버퍼 계층
     subgraph Collection_Layer [수집 및 버퍼 계층]
         Filebeat["🚀 Filebeat<br/>(Lightweight Ingestion)"]
         Kafka["🗄️ Apache Kafka Cluster<br/>(Message Buffer & Queue)"]
     end
 
+    %% 가공 및 저장 계층
     subgraph Processing_Layer [가공 및 저장 계층]
         Logstash["⚙️ Logstash<br/>(Grok Parsing & Masking)"]
         Elasticsearch["💾 Elasticsearch<br/>(Distributed Storage)"]
     end
 
+    %% 관제 계층 (시각적 균형을 위해 하단 분리 배치)
     subgraph Management_Layer [관제 계층]
         AKHQ["📊 AKHQ Web UI<br/>(Topic & Lag Monitoring)"]
         Kibana["👁️ Kibana Dashboard<br/>(Security Visualization)"]
     end
 
-    %% 흐름 및 연결
+    %% 메인 데이터 파이프라인 흐름 (위 -> 아래)
     Nginx -->|1. 로그 생성| Filebeat
     Filebeat -->|2. 실시간 전송| Kafka
-    Kafka -->|3. 로그 이벤터 소비| Logstash
-    Logstash -->|4. 정제 및 마스킹 데이터 적재| Elasticsearch
+    Kafka -->|3. 이벤터 소비| Logstash
+    Logstash -->|4. 정제/마스킹 적재| Elasticsearch
+
+    %% 실시간 관제 및 모니터링 흐름 (양옆 분기)
     Kafka -.->|토픽 관제| AKHQ
     Elasticsearch -.->|보안 모니터링| Kibana
 
