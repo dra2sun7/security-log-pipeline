@@ -18,10 +18,10 @@ graph TB
     classDef storage fill:#ffebee,stroke:#c62828,stroke-width:2px;
 
     %% 외부 유입
-    Client["🌐 외부 대규모 웹 트래픽"] --> L4["⚖️ L4 Load Balancer<br/>(Round-Robin / Least-Conn)"]
+    Client["🌐 외부 대규모 웹 트래픽"] --> L4["⚖️ L4 Load Balancer<br/>Round-Robin / Least-Conn"]
 
     %% 웹 계층 이중화
-    subgraph Web_Cluster [Web Server Layer (Active-Active)]
+    subgraph Web_Cluster [Web Server Layer - Active-Active]
         Nginx1["🛡️ Nginx Node 1"]
         Nginx2["🛡️ Nginx Node 2"]
     end
@@ -33,7 +33,7 @@ graph TB
         Filebeat1["🚀 Filebeat 1"] ---> Kafka1
         Filebeat2["🚀 Filebeat 2"] ---> Kafka2
         
-        subgraph Kafka_Cluster [Apache Kafka Cluster (3-Node)]
+        subgraph Kafka_Cluster [Apache Kafka Cluster - 3-Node]
             Kafka1["🗄️ Broker 1"] <--> Kafka2["🗄️ Broker 2"]
             Kafka2 <--> Kafka3["🗄️ Broker 3"]
         end
@@ -54,9 +54,9 @@ graph TB
         Logstash1 --> ES_Cluster
         Logstash2 --> ES_Cluster
         
-        subgraph ES_Cluster [Elasticsearch Cluster (3-Node)]
-            ES1["💾 Master/Data Node 1<br/>(Primary Shard A)"] <--> ES2["💾 Data Node 2<br/>(Replica Shard A / Primary Shard B)"]
-            ES2 <--> ES3["💾 Data Node 3<br/>(Replica Shard B)"]
+        subgraph ES_Cluster [Elasticsearch Cluster - 3-Node]
+            ES1["💾 Master/Data Node 1<br/>Primary Shard A"] <--> ES2["💾 Data Node 2<br/>Replica Shard A / Primary Shard B"]
+            ES2 <--> ES3["💾 Data Node 3<br/>Replica Shard B"]
         end
     end
 
